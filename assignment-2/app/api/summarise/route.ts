@@ -5,7 +5,7 @@ import { extractBlogContent } from '@/lib/scraper';
 import { summarizeTextStatic } from '@/lib/summariser';
 import { translateToUrduStatic } from '@/lib/translate';
 import { supabase } from '@/lib/supabase';
-import { connectMongo, Blog } from '@/lib/mongodb';
+// import { connectMongo, Blog } from '@/lib/mongodb';
 
 
 
@@ -32,11 +32,6 @@ export async function POST(req: NextRequest) {
       urdu_summary: urduSummary,
     });
 
-    // MongoDB archive
-    await connectMongo();
-    await Blog.create({ blogUrl: url, fullText: article.content });
-
-    return NextResponse.json({ englishSummary: summary, urduSummary });
   } catch (err) {
     console.error('[PROCESS ERROR]', err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
