@@ -19,14 +19,13 @@ export async function POST(req: NextRequest) {
     const summary = summarizeTextStatic(article.content);
     const urduSummary = translateToUrduStatic(summary);
 
-    // ✅ Just return the summary and translation
     return NextResponse.json({
       url,
       title: article.title,
       author: article.author,
       date: article.date,
-      summary,
-      urduSummary,
+      englishSummary: summary,
+      urduSummary: urduSummary,
     });
 
   } catch (err) {
