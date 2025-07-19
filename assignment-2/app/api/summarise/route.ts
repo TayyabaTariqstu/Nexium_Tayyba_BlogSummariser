@@ -7,8 +7,6 @@ import { translateToUrduStatic } from '@/lib/translate';
 import { supabase } from '@/lib/supabase';
 // import { connectMongo, Blog } from '@/lib/mongodb';
 
-
-
 export async function POST(req: NextRequest) {
   try {
     const { url } = await req.json();
@@ -23,13 +21,27 @@ export async function POST(req: NextRequest) {
     const urduSummary = translateToUrduStatic(summary);
 
     // Supabase insert
-    await supabase.from('summaries').insert({
+    const { error } = await supabase.from('summaries').insert({
       url,
       title: article.title,
       author: article.author,
       date: article.date,
       summary,
       urdu_summary: urduSummary,
+    });
+
+    if (error) {
+      console.error('[SUPABASE ERROR]', error);
+      return NextResponse.json({ error: 'Failed to save summary.' }, { status: 500 });
+    }
+
+    return NextResponse.json({
+      message: 'Summary generated successfully.',
+      data: {
+        title: article.title,
+        summary,
+        urduSummary,
+      },
     });
 
   } catch (err) {
